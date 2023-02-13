@@ -1,5 +1,9 @@
 import { createTransport, Transporter } from 'nodemailer';
+import hbs, {
+  NodemailerExpressHandlebarsOptions,
+} from 'nodemailer-express-handlebars';
 import SMTPTransport from 'nodemailer/lib/smtp-transport';
+import { resolve } from 'path';
 
 import { IConfig, IEmailSender, ISender } from './IEmailSender';
 
@@ -14,6 +18,14 @@ class EmailSend implements IEmailSender {
   }
 
   config({ host, port }: IConfig) {
+    const handlebarOptions: NodemailerExpressHandlebarsOptions = {
+      viewEngine: {
+        partialsDir: resolve('./src/views/'),
+        defaultLayout: false,
+      },
+      viewPath: resolve('./src/views/'),
+    };
+
     const config = {
       host,
       port,
@@ -24,16 +36,30 @@ class EmailSend implements IEmailSender {
       },
     };
     this.transport = createTransport(config);
+    this.transport.use('compile', hbs(handlebarOptions));
   }
 
-  async send({ target, subject, message }: ISender) {
+  async send({ target, subject, message, username, template }: ISender) {
     const sender = {
-      from: this.email,
+      from: {
+        name: 'Diario do programador',
+        address: 'diariodoprogramadordev@gmail.com',
+      },
       to: target,
       replyTo: this.email,
       subject,
-      html: message,
-      text: message,
+      template,
+      context: {
+        name: username,
+        message,
+      },
+      attachments: [
+        {
+          filename: 'logo.png',
+          path: './src/assets/logo.png',
+          cid: 'logo',
+        },
+      ],
     };
     try {
       await this.transport.sendMail(sender);

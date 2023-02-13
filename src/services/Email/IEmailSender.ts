@@ -7,6 +7,8 @@ export interface ISender {
   target: string;
   subject: string;
   message: string;
+  username: string;
+  template: 'confirmEmail' | 'forgetPassword';
 }
 
 export interface IEmailSender {
