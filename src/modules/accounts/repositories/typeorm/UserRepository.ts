@@ -33,6 +33,10 @@ class UserRepository implements IUserRepository {
     await this.repository.save(user);
     return user;
   }
+
+  async excludeById(user: User) {
+    await this.repository.remove(user);
+  }
 }
 
 export { UserRepository };
