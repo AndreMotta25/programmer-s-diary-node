@@ -1,64 +1,57 @@
-<!DOCTYPE html>
 <html>
-<head>
-  <meta charset="utf-8">
-  <meta http-equiv="x-ua-compatible" content="ie=edge">
-  <title>Welcome Email</title>
-  <style>
-    @import url('https://fonts.googleapis.com/css2?family=Roboto+Slab&display=swap');
-    
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-    html {
-      font-size: 65.5%;
-    }
-    .container {
-      background:linear-gradient(to right, #E981D9, #6D22C4  );
-      width: 60%;
-      padding: 2rem;
-      border-radius: 0.5rem;
-      font-family: 'Roboto Slab', serif;
-      margin: 0 auto;
-    }
-    h2 {
-      font-size: 2.5rem;
-      font-weight: bold;
-    }
-    span {
-      display: block;
-      width: 100%;
-      margin-top: 2rem;
-      font-weight: bold;
-    }
-    .image {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      width: 100%;
-      margin: 0 auto;
-    }
-    .image {
-      display: block;
-      text-align: center;
-    }
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="x-ua-compatible" content="ie=edge" />
+    <title>Welcome Email</title>
+    <style>
+      @import
+      url('https://fonts.googleapis.com/css2?family=Roboto+Slab&display=swap');
+      * { margin: 0; padding: 0; box-sizing: border-box; } html { font-size:
+      65.5%; } .container { background:linear-gradient(to right, #E981D9,
+      #6D22C4 ); width: 60%; padding: 2rem; border-radius: 0.5rem; font-family:
+      'Roboto Slab', serif; margin: 0 auto; overflow: auto; } h2 { font-size: 2.5rem;
+      font-weight: bold; }
+      .image { display: flex;
+      align-items: center; justify-content: center; width: 100%; margin: 0 auto;
+      } .image { display: block; text-align: center; }
+      #active_account {
+        border-radius: 1rem;
+        background-color: #282828;
+        color: white;
+        font-weight: bold;
+        text-decoration: none;
+        padding: 0.5rem 2rem;
+        margin: 1rem auto;
+        display: block;
+        text-align: center;
+        width: 100%
+      }
+      #token {
+        margin: 1rem 0;
+        font-weight: bold;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="image">
+        <a href="https://nodemailer.com/message/attachments/">
+          <img src="cid:logo" alt="Diario do programador" />
+        </a>
+      </div>
+      <div id="informations">
+        <h2>Olá {{name}}! </h2>
+        <p>Click no botão abaixo para ativar sua conta.</p>
+        <a id="active_account" href="http://localhost:3000/confirme-email/{{message}}">Ativar conta</a>
+      </div>      
+      <p>
+        Obs: Se o email não for confirmado em 10 minutos, a conta criada será automaticamente excluida!
+      </p>
 
-  </style>
-</head>
-<body>
-  <div class="container">
-    <div class="image">
-       <a href="https://nodemailer.com/message/attachments/">
-        <img src="cid:logo" alt="Diario do programador">
-       </a>
+      <p id="token">
+        Ou utilize o token: {{message}}
+      </p>
+
     </div>
-     <h2>Olá {{name}}! </h2>
-     <p>Seu token expirará em 10 minutos.</p>
-     <span>
-      {{message}}
-      </span>
-  </div>
-</body>
+  </body>
 </html>
