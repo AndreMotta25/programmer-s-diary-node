@@ -26,11 +26,12 @@ class UserRepository implements IUserRepository {
     return user;
   }
 
-  async create(data: IRequest): Promise<void> {
+  async create(data: IRequest): Promise<User> {
     const user = this.repository.create({
       ...data,
     });
     await this.repository.save(user);
+    return user;
   }
 }
 
