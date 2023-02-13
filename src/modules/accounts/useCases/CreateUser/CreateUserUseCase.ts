@@ -1,23 +1,20 @@
 import { hash } from 'bcryptjs';
-import { sign } from 'jsonwebtoken';
+import { scheduleJob } from 'node-schedule';
 import normalizeEmail from 'normalize-email';
-import { injectable, inject } from 'tsyringe';
+import { injectable, inject, container } from 'tsyringe';
 
-import { IEmailSender } from '../../../../services/Email/IEmailSender';
-import { convertTime } from '../../../../utils/convertTime';
+import { User } from '../../entities/User';
 import { IRequest, IUserRepository } from '../../repositories/IUserRepository';
+import { SendConfirmEmailUseCase } from '../SendConfirmEmailUseCase/SendConfirmEmailUseCase';
 
 @injectable()
 class CreateUserUseCase {
   private readonly repository: IUserRepository;
-  private readonly sender: IEmailSender;
+  private readonly confirmEmailUseCase: SendConfirmEmailUseCase;
 
-  constructor(
-    @inject('IUserRepository') repository: IUserRepository,
-    @inject('IEmailSender') sender: IEmailSender
-  ) {
+  constructor(@inject('IUserRepository') repository: IUserRepository) {
     this.repository = repository;
-    this.sender = sender;
+    this.confirmEmailUseCase = container.resolve(SendConfirmEmailUseCase);
   }
 
   async execute({ username, email, password }: IRequest) {
@@ -39,19 +36,16 @@ class CreateUserUseCase {
       password: passwordHash,
     });
 
-    const token = sign(
-      { subject: user.id, exp: convertTime.toMin(10) },
-      user.hashToken
-    );
+    await this.confirmEmailUseCase.execute(user);
 
-    this.sender.config({ host: 'smtp.gmail.com', port: 465 });
+    const date = new Date();
+    date.setMinutes(date.getMinutes() + 2);
 
-    this.sender.send({
-      target: normalizedEmail,
-      subject: 'Confirmação de email',
-      message: token,
-      username: user.username,
-      template: 'confirmEmail',
+    scheduleJob(date, async () => {
+      const userConfirmed = (await this.repository.findById(user.id)) as User;
+      if (!userConfirmed.email_confirmed)
+        this.repository.excludeById(userConfirmed);
+      console.log('trabalho agendado terminado');
     });
   }
 }

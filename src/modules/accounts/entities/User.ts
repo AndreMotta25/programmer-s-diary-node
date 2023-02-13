@@ -34,6 +34,9 @@ class User {
   @Column()
   hashToken: string;
 
+  @Column({ default: false })
+  email_confirmed: boolean;
+
   constructor() {
     this.id = uuid();
     this.hashToken = randomBytes(16).toString('hex');
