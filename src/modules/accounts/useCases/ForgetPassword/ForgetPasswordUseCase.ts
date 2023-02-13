@@ -32,6 +32,8 @@ class ForgetPasswordUseCase {
         target: user.email,
         subject: 'reset password ',
         message: `<b><a>${token}</a></b>`,
+        username: user.username,
+        template: 'forgetPassword',
       });
     } catch {
       throw new Error('Erro ao enviar o email');
