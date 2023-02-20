@@ -1,9 +1,10 @@
 import { verify } from 'jsonwebtoken';
+import jwt_decode from 'jwt-decode';
 import { inject, injectable } from 'tsyringe';
 
 import { IUserRepository } from '../../repositories/IUserRepository';
 
-interface IUser {
+interface IJwtPayload {
   subject: string;
 }
 
@@ -18,11 +19,12 @@ class ValidadeTokenUseCase {
     if (!token) throw new Error('Está faltando o token');
 
     try {
-      const { subject: id } = verify(token, '1234') as IUser;
-
+      const { subject: id } = jwt_decode(token) as IJwtPayload;
       const user = await this.repository.findById(id);
 
       if (!user) throw new Error('Usuario não achado');
+
+      verify(token, user.hashToken) as IJwtPayload;
 
       return user.id;
     } catch {
