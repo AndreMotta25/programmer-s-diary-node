@@ -5,7 +5,8 @@ import hbs, {
 import SMTPTransport from 'nodemailer/lib/smtp-transport';
 import { resolve } from 'path';
 
-import { IConfig, IEmailSender, ISender } from './IEmailSender';
+import AppError from '../../errors/AppError';
+import { IEmailSender, ISender } from './IEmailSender';
 
 class EmailSend implements IEmailSender {
   private email: string;
@@ -15,9 +16,10 @@ class EmailSend implements IEmailSender {
   constructor() {
     this.email = 'diariodoprogramadordev@gmail.com';
     this.password = 'rwzaymldyxswcczi';
+    this.config();
   }
 
-  config({ host, port }: IConfig) {
+  config() {
     const handlebarOptions: NodemailerExpressHandlebarsOptions = {
       viewEngine: {
         partialsDir: resolve('./src/views/'),
@@ -27,9 +29,9 @@ class EmailSend implements IEmailSender {
     };
 
     const config = {
-      host,
-      port,
-      secure: port === 465,
+      host: 'smtp.gmail.com',
+      port: 465,
+      secure: true,
       auth: {
         user: this.email,
         pass: this.password,
@@ -42,8 +44,8 @@ class EmailSend implements IEmailSender {
   async send({ target, subject, message, username, template }: ISender) {
     const sender = {
       from: {
-        name: 'Diario do programador',
-        address: 'diariodoprogramadordev@gmail.com',
+        name: 'Diario do Programador',
+        address: this.email,
       },
       to: target,
       replyTo: this.email,
@@ -65,7 +67,7 @@ class EmailSend implements IEmailSender {
       await this.transport.sendMail(sender);
       return 'E-Mail enviado com sucesso';
     } catch (e) {
-      throw new Error('Ocorreu um erro ao enviar o email');
+      throw new AppError('Ocorreu um erro ao enviar o email');
     }
   }
 }
