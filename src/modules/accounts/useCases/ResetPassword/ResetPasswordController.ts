@@ -8,7 +8,6 @@ class ResetPasswordController {
   async handler(request: Request, response: Response) {
     const { token } = request.params;
     const { new_password } = request.body;
-
     const validateTokenUseCase = container.resolve(ValidadeTokenUseCase);
     const resetPasswordUseCase = container.resolve(ResetPasswordUseCase);
 

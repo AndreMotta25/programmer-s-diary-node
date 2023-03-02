@@ -15,11 +15,11 @@ class SendConfirmEmailUseCase {
 
   async execute(user: User) {
     const token = sign(
-      { subject: user.id, exp: convertTime.toMin(2) },
+      { subject: user.id, exp: convertTime.toMin(60) },
       user.hashToken
     );
 
-    this.sender.config({ host: 'smtp.gmail.com', port: 465 });
+    // this.sender.config({ host: 'smtp.gmail.com', port: 465 });
 
     await this.sender.send({
       target: user.email,
