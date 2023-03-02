@@ -1,3 +1,4 @@
+import cors from 'cors';
 import { Router } from 'express';
 
 import { authRoutes } from './authenticate.routes';
@@ -7,6 +8,7 @@ import { userRouter } from './user.routes';
 
 const routes = Router();
 
+routes.use(cors());
 routes.use('/user', userRouter);
 routes.use('/password', passwordRoutes);
 
