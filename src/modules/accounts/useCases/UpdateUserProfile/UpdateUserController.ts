@@ -11,7 +11,7 @@ class UpdateUserProfileController {
     const { id } = request.user;
 
     const updateUseCase = container.resolve(UpdateUserProfileUseCase);
-    updateUseCase.execute({ username, email, id });
+    await updateUseCase.execute({ username, email, id });
 
     return response.status(204).send();
   }

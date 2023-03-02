@@ -19,7 +19,7 @@ class LogoutUserUseCase {
 
     user.hashToken = newHash;
 
-    this.repository.create(user);
+    await this.repository.create(user);
   }
 }
 

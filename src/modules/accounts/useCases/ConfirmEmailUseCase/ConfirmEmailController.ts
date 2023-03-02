@@ -9,7 +9,7 @@ class ConfirmEmailController {
 
     const confirmUseCase = container.resolve(ConfirmEmailUseCase);
 
-    confirmUseCase.execute(token);
+    await confirmUseCase.execute(token);
 
     return response.status(204).send();
   }
