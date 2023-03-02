@@ -9,12 +9,9 @@ class ValidateTokenController {
 
     const validateTokenUseCase = container.resolve(ValidadeTokenUseCase);
 
-    // const emailUser =
     await validateTokenUseCase.execute(token);
 
-    // request.session.email = emailUser;
-
-    return response.status(201).send();
+    return response.status(201).json({ message: 'ok' });
   }
 }
 export { ValidateTokenController };
