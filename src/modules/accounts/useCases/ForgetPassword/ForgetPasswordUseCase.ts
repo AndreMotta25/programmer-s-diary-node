@@ -1,6 +1,7 @@
 import { sign } from 'jsonwebtoken';
 import { inject, injectable } from 'tsyringe';
 
+import AppError from '../../../../errors/AppError';
 import { IEmailSender } from '../../../../services/Email/IEmailSender';
 import { convertTime } from '../../../../utils/convertTime';
 import { IUserRepository } from '../../repositories/IUserRepository';
@@ -19,24 +20,23 @@ class ForgetPasswordUseCase {
   async execute(email: string) {
     const user = await this.repository.findByEmail(email);
 
-    if (!user) throw new Error('Usuario não achado');
+    if (!user) throw new AppError('Usuario não achado');
 
-    const token = sign({ subject: user.id, exp: convertTime.toMin(1) }, '1234');
-
-    // const sender = new EmailSend();
-
-    this.sender.config({ host: 'smtp.gmail.com', port: 465 });
+    const token = sign(
+      { subject: user.id, exp: convertTime.toMin(3) },
+      user.hashToken
+    );
 
     try {
       await this.sender.send({
         target: user.email,
         subject: 'reset password ',
-        message: `<b><a>${token}</a></b>`,
+        message: `${token}`,
         username: user.username,
         template: 'forgetPassword',
       });
     } catch {
-      throw new Error('Erro ao enviar o email');
+      throw new AppError('Erro ao enviar o email');
     }
   }
 }
