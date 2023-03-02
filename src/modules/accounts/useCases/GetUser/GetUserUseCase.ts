@@ -7,6 +7,7 @@ interface IUser {
   username: string;
   email: string;
   avatar: string;
+  id: string;
 }
 
 @injectable()
@@ -23,6 +24,7 @@ class GetUserUseCase {
       username: user.username,
       email: user.email,
       avatar: user.avatar,
+      id: user.id,
     };
 
     return userDTO;
