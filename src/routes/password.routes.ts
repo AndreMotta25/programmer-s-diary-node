@@ -8,7 +8,6 @@ import { forgetPasswordValidation } from '../modules/accounts/validations/forget
 const passwordRoutes = Router();
 
 const forgetPasswordController = new ForgetPasswordController();
-const validateTokenController = new ValidateTokenController();
 const resetPasswordUseCase = new ResetPasswordController();
 
 passwordRoutes.post(
@@ -16,9 +15,6 @@ passwordRoutes.post(
   forgetPasswordValidation,
   forgetPasswordController.handler
 );
-
-// vai validar o token e retornar um ok
-passwordRoutes.post('/validate-token/:token', validateTokenController.handler);
 
 passwordRoutes.patch('/reset-password/:token', resetPasswordUseCase.handler);
 
