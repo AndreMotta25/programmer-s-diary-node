@@ -1,6 +1,7 @@
 import normalizeEmail from 'normalize-email';
 import { injectable, inject } from 'tsyringe';
 
+import FormError from '../../../../errors/FormError';
 import { User } from '../../entities/User';
 import { IUserRepository } from '../../repositories/IUserRepository';
 
@@ -19,21 +20,23 @@ class UpdateUserProfileUseCase {
   }
 
   async execute({ username, id, email }: IRequest) {
-    const user = await this.repository.findById(id);
+    const user = (await this.repository.findById(id)) as User;
 
     let userExists: User | null;
     const normalizedEmail = normalizeEmail(email);
 
-    if (!user) throw new Error('Usuario não achado');
+    // if (!user) throw new AppError('Usuario não achado', 404);
 
     // todo: trocar essa forma de validação, pq é muito bagunçada. usar generics
     if (!(username === user?.username)) {
       userExists = await this.repository.findByUsername(username);
-      if (userExists) throw new Error('Username indisponível');
+      if (userExists)
+        throw new FormError(username, 'Username indisponível', 'username', 400);
     }
     if (!(email === user?.email)) {
       userExists = await this.repository.findByEmail(normalizedEmail);
-      if (userExists) throw new Error('E-mail indisponível');
+      if (userExists)
+        throw new FormError(email, 'E-mail indisponível', 'email', 400);
     }
 
     Object.assign(user, {

@@ -2,6 +2,7 @@ import { verify } from 'jsonwebtoken';
 import jwt_decode from 'jwt-decode';
 import { inject, injectable } from 'tsyringe';
 
+import AppError from '../../../../errors/AppError';
 import { IUserRepository } from '../../repositories/IUserRepository';
 
 interface IJwtPayload {
@@ -22,15 +23,15 @@ class ConfirmEmailUseCase {
 
       const user = await this.repository.findById(id);
 
-      if (!user) throw new Error('Usuario não achado');
-
+      if (!user) throw new AppError('Usuario não achado');
+      console.log('Valiadando');
       verify(token, user.hashToken);
 
       user.email_confirmed = true;
 
       await this.repository.create(user);
     } catch {
-      throw new Error('Token Invalido');
+      throw new AppError('Token Invalido');
     }
   }
 }

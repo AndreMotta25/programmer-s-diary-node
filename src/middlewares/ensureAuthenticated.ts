@@ -2,10 +2,11 @@ import { Request, Response, NextFunction } from 'express';
 import { verify } from 'jsonwebtoken';
 import jwt_decode from 'jwt-decode';
 
+import AppError from '../errors/AppError';
 import { UserRepository } from '../modules/accounts/repositories/typeorm/UserRepository';
 
 interface IJwtPayload {
-  sub: string;
+  subject: string;
 }
 
 async function ensureAuthenticated(
@@ -15,7 +16,7 @@ async function ensureAuthenticated(
 ) {
   const { authorization } = request.headers;
 
-  if (!authorization) throw new Error('O Token está faltando');
+  if (!authorization) throw new AppError('O Token está faltando', 400);
 
   const token = authorization.split(' ')[1];
 
@@ -23,22 +24,17 @@ async function ensureAuthenticated(
     const userRepository = new UserRepository();
 
     const decryptedToken = jwt_decode(token) as IJwtPayload;
-    const user = await userRepository.findById(decryptedToken.sub);
+    const user = await userRepository.findById(decryptedToken.subject);
 
-    if (!user) throw new Error('Usuario não achado');
+    if (!user) throw new AppError('Usuario não achado', 403);
 
     verify(token, user.hashToken) as IJwtPayload;
-
-    // const userRepository = new UserRepository();
-    // const user = await userRepository.findById(credentials.sub);
-
-    // if (!user) throw new Error('Usuario não achado');
 
     request.user = { id: user.id };
 
     next();
   } catch {
-    throw new Error('Token invalido');
+    throw new AppError('Token invalido', 401);
   }
 }
 

@@ -3,6 +3,7 @@ import { scheduleJob } from 'node-schedule';
 import normalizeEmail from 'normalize-email';
 import { injectable, inject, container } from 'tsyringe';
 
+import FormError from '../../../../errors/FormError';
 import { User } from '../../entities/User';
 import { IRequest, IUserRepository } from '../../repositories/IUserRepository';
 import { SendConfirmEmailUseCase } from '../SendConfirmEmailUseCase/SendConfirmEmailUseCase';
@@ -10,11 +11,11 @@ import { SendConfirmEmailUseCase } from '../SendConfirmEmailUseCase/SendConfirmE
 @injectable()
 class CreateUserUseCase {
   private readonly repository: IUserRepository;
-  private readonly confirmEmailUseCase: SendConfirmEmailUseCase;
+  private readonly sendConfirmEmailUseCase: SendConfirmEmailUseCase;
 
   constructor(@inject('IUserRepository') repository: IUserRepository) {
     this.repository = repository;
-    this.confirmEmailUseCase = container.resolve(SendConfirmEmailUseCase);
+    this.sendConfirmEmailUseCase = container.resolve(SendConfirmEmailUseCase);
   }
 
   async execute({ username, email, password }: IRequest) {
@@ -22,11 +23,13 @@ class CreateUserUseCase {
 
     let userExists = await this.repository.findByEmail(normalizedEmail);
 
-    if (userExists) throw new Error('E-mail indisponível');
+    if (userExists)
+      throw new FormError(email, 'E-mail indisponível', 'email', 400);
 
     userExists = await this.repository.findByUsername(username);
 
-    if (userExists) throw new Error('Username indisponível');
+    if (userExists)
+      throw new FormError(email, 'Username indisponível', 'username', 400);
 
     const passwordHash = await hash(password, 8);
 
@@ -36,10 +39,10 @@ class CreateUserUseCase {
       password: passwordHash,
     });
 
-    await this.confirmEmailUseCase.execute(user);
+    await this.sendConfirmEmailUseCase.execute(user);
 
     const date = new Date();
-    date.setMinutes(date.getMinutes() + 2);
+    date.setMinutes(date.getMinutes() + 60);
 
     scheduleJob(date, async () => {
       const userConfirmed = (await this.repository.findById(user.id)) as User;

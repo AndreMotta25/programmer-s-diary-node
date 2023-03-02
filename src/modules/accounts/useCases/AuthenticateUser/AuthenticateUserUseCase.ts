@@ -2,6 +2,7 @@ import { compare } from 'bcryptjs';
 import { sign } from 'jsonwebtoken';
 import { inject, injectable } from 'tsyringe';
 
+import AppError from '../../../../errors/AppError';
 import { convertTime } from '../../../../utils/convertTime';
 import { IUserRepository } from '../../repositories/IUserRepository';
 
@@ -23,16 +24,16 @@ class AuthenticateUserUseCase {
       (await this.repository.findByEmail(identification)) ??
       (await this.repository.findByUsername(identification));
 
-    if (!user) throw new Error('Senha ou E-mail Incorretos');
+    if (!user) throw new AppError('Senha ou E-mail Incorretos');
 
     const passworMatch = await compare(password, user.password);
 
-    if (!passworMatch) throw new Error('Senha ou E-mail Incorretos');
+    if (!passworMatch) throw new AppError('Senha ou E-mail Incorretos');
 
     const token = sign(
       {
-        sub: user.id,
-        exp: convertTime.toDays(2),
+        subject: user.id,
+        exp: convertTime.toMin(1),
         iss: "programmer's diary",
       },
       user.hashToken
@@ -42,6 +43,8 @@ class AuthenticateUserUseCase {
       token,
       user: {
         email: user.email,
+        id: user.id,
+        avatar: user.avatar,
       },
     };
   }
