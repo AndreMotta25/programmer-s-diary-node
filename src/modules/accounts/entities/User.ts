@@ -5,8 +5,11 @@ import {
   PrimaryColumn,
   CreateDateColumn,
   UpdateDateColumn,
+  OneToMany,
 } from 'typeorm';
 import { v4 as uuid } from 'uuid';
+
+import { Card } from '../../cards/entities/Card';
 
 @Entity()
 class User {
@@ -36,6 +39,9 @@ class User {
 
   @Column({ default: false })
   email_confirmed: boolean;
+
+  @OneToMany(() => Card, (card) => card.user)
+  cards: Card[];
 
   constructor() {
     this.id = uuid();
