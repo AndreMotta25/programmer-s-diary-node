@@ -17,13 +17,35 @@ class CardRepository implements ICardRepository {
     this.repositoryCard = appDataSource.getRepository(Card);
     this.repositoryUser = repositoryUser;
   }
+  async getCards(userId: string): Promise<Card[]> {
+    const user = (await this.repositoryUser.findById(userId)) as User;
 
-  async create(cardDTO: ICreateCardDTO): Promise<string> {
-    const userFind = (await this.repositoryUser.findById(
-      cardDTO.userId
-    )) as User;
+    const cards = await this.repositoryCard.find({
+      where: {
+        user: {
+          id: user.id,
+        },
+      },
+    });
+    return cards;
+  }
 
-    const card = this.repositoryCard.create({ ...cardDTO, user: userFind });
+  async create({
+    code,
+    description,
+    language,
+    name,
+    userId,
+  }: ICreateCardDTO): Promise<string> {
+    const userFind = (await this.repositoryUser.findById(userId)) as User;
+
+    const card = this.repositoryCard.create({
+      code,
+      description,
+      language,
+      name,
+      user: userFind,
+    });
 
     await this.repositoryCard.save(card);
     return card.id;
