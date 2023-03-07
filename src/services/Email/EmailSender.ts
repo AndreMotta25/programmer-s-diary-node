@@ -15,7 +15,7 @@ class EmailSend implements IEmailSender {
 
   constructor() {
     this.email = 'diariodoprogramadordev@gmail.com';
-    this.password = 'rwzaymldyxswcczi';
+    this.password = process.env.SECRET_API as string;
     this.config();
   }
 

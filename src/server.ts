@@ -1,6 +1,7 @@
 import 'reflect-metadata';
 import 'express-async-errors';
 
+import { config } from 'dotenv';
 import express, { Request, Response, NextFunction } from 'express';
 import path from 'path';
 
@@ -8,9 +9,9 @@ import { appDataSource } from './database';
 import AppError from './errors/AppError';
 import FormError from './errors/FormError';
 import { routes } from './routes';
-
 import './shared/container';
 
+config(); // dotenv
 const app = express();
 
 appDataSource
