@@ -20,7 +20,7 @@ class Card {
   language: string;
   @Column({ type: 'text' })
   description: string;
-  @Column({ type: 'text' })
+  @Column({ type: 'text', default: '' })
   code: string;
 
   @CreateDateColumn()

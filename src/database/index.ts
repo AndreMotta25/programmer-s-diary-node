@@ -8,7 +8,10 @@ const appDataSource = new DataSource({
   password: 'docker',
   database: 'diarioDoProgramador',
   synchronize: false,
-  entities: ['./src/modules/accounts/entities/*.ts'],
+  entities: [
+    './src/modules/accounts/entities/*.ts',
+    './src/modules/cards/entities/*.ts',
+  ],
   migrations: ['./src/database/migrations/*.ts'],
 });
 
