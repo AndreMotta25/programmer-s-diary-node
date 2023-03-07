@@ -24,7 +24,6 @@ class ConfirmEmailUseCase {
       const user = await this.repository.findById(id);
 
       if (!user) throw new AppError('Usuario não achado');
-      console.log('Valiadando');
       verify(token, user.hashToken);
 
       user.email_confirmed = true;

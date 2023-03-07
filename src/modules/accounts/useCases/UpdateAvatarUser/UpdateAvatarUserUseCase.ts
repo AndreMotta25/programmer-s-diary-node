@@ -33,7 +33,6 @@ class UpdateUserAvatarUseCase {
     if (user.avatar !== 'avatar_default.jpg') {
       await fs.unlink(`./avatar/${user.avatar}`);
     }
-    console.log(user);
 
     user.avatar = avatar;
 

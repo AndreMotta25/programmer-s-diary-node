@@ -23,9 +23,7 @@ export const fileFilter = (
     !file.originalname.endsWith('.jpg') &&
     !file.originalname.endsWith('.png')
   ) {
-    console.log('não é uma foto');
     return cb(null, false);
   }
-  console.log('é uma foto');
   return cb(null, true);
 };
