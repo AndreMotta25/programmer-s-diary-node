@@ -6,6 +6,7 @@ import { User } from '../../../accounts/entities/User';
 import { IUserRepository } from '../../../accounts/repositories/IUserRepository';
 import { Card } from '../../entities/Card';
 import { ICreateCardDTO } from '../../useCases/CreateCard/ICreateCardDTO';
+import { IUpdateCardDTO } from '../../useCases/UpdateCard/IUpdateCardDTO';
 import { ICardRepository } from '../ICardRepository';
 
 @singleton()
@@ -17,6 +18,17 @@ class CardRepository implements ICardRepository {
     this.repositoryCard = appDataSource.getRepository(Card);
     this.repositoryUser = repositoryUser;
   }
+  async deleteCard(id: string): Promise<void> {
+    await this.repositoryCard.delete(id);
+  }
+  async updateCard(card: IUpdateCardDTO): Promise<void> {
+    const cardFind = await this.findById(card.id);
+    if (cardFind) {
+      Object.assign(cardFind, card);
+      this.repositoryCard.save(cardFind);
+    }
+  }
+
   async getCards(userId: string): Promise<Card[]> {
     const user = (await this.repositoryUser.findById(userId)) as User;
 
@@ -49,6 +61,11 @@ class CardRepository implements ICardRepository {
 
     await this.repositoryCard.save(card);
     return card.id;
+  }
+
+  async findById(id: string) {
+    const card = await this.repositoryCard.findOneBy({ id });
+    return card;
   }
 }
 
