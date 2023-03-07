@@ -1,9 +1,11 @@
+import { singleton } from 'tsyringe';
 import { Repository } from 'typeorm';
 
 import { appDataSource } from '../../../../database';
 import { User } from '../../entities/User';
 import { IRequest, IUserRepository } from '../IUserRepository';
 
+@singleton()
 class UserRepository implements IUserRepository {
   private readonly repository: Repository<User>;
 
