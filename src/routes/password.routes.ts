@@ -1,9 +1,9 @@
-import { Router, Request, Response } from 'express';
+import { Router } from 'express';
 
 import { ForgetPasswordController } from '../modules/accounts/useCases/ForgetPassword/ForgetPasswordController';
 import { ResetPasswordController } from '../modules/accounts/useCases/ResetPassword/ResetPasswordController';
-import { ValidateTokenController } from '../modules/accounts/useCases/ValidateToken/ValidateTokenController';
 import { forgetPasswordValidation } from '../modules/accounts/validations/forgetPasswordValidation.validation';
+import { resetPassowordValidation } from '../modules/accounts/validations/resetPassowordValidation.validation';
 
 const passwordRoutes = Router();
 
@@ -16,6 +16,10 @@ passwordRoutes.post(
   forgetPasswordController.handler
 );
 
-passwordRoutes.patch('/reset-password/:token', resetPasswordUseCase.handler);
+passwordRoutes.patch(
+  '/reset-password/:token',
+  resetPassowordValidation,
+  resetPasswordUseCase.handler
+);
 
 export { passwordRoutes };

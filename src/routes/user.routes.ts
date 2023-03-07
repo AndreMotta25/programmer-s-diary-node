@@ -8,6 +8,8 @@ import { GetUserController } from '../modules/accounts/useCases/GetUser/GetUserC
 import UpdateAvatarUserController from '../modules/accounts/useCases/UpdateAvatarUser/UpdateAvatarUserController';
 import { UpdatePasswordController } from '../modules/accounts/useCases/UpdatePassword/UpdatePasswordController';
 import { UpdateUserProfileController } from '../modules/accounts/useCases/UpdateUserProfile/UpdateUserController';
+import { passwordUpdateValidation } from '../modules/accounts/validations/updatePasswordValidation.validation';
+import { updateProfileValidation } from '../modules/accounts/validations/updateProfileValidation.validation';
 import { userCreateValidation } from '../modules/accounts/validations/userCreateValidation.validation';
 
 const multerConfig = multer({
@@ -30,8 +32,17 @@ userRouter.use(ensureAuthenticated); // middleware
 
 userRouter.get('/', getUserController.handler);
 
-userRouter.put('/profile-update', updateUserProfileController.handler);
-userRouter.patch('/password-update', updatePasswordController.handler);
+userRouter.put(
+  '/profile-update',
+  updateProfileValidation,
+  updateUserProfileController.handler
+);
+
+userRouter.patch(
+  '/password-update',
+  passwordUpdateValidation,
+  updatePasswordController.handler
+);
 
 userRouter.patch(
   '/avatar',

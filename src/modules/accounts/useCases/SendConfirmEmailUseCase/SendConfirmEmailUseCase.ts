@@ -19,8 +19,6 @@ class SendConfirmEmailUseCase {
       user.hashToken
     );
 
-    // this.sender.config({ host: 'smtp.gmail.com', port: 465 });
-
     await this.sender.send({
       target: user.email,
       subject: 'Confirmação de email',
