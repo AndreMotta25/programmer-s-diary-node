@@ -30,10 +30,13 @@ class AuthenticateUserUseCase {
 
     if (!passworMatch) throw new AppError('Senha ou E-mail Incorretos');
 
+    if (!user.email_confirmed)
+      throw new AppError('Confirme o email para entrar');
+
     const token = sign(
       {
         subject: user.id,
-        exp: convertTime.toMin(1),
+        exp: convertTime.toMin(50),
         iss: "programmer's diary",
       },
       user.hashToken
