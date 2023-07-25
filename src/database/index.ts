@@ -8,10 +8,10 @@ const appDataSource = new DataSource({
   url: process.env.DATABASE_URL,
   synchronize: false,
   entities: [
-    './src/modules/accounts/entities/*.ts',
-    './src/modules/cards/entities/*.ts',
+    './src/modules/accounts/entities/*.js',
+    './src/modules/cards/entities/*.js',
   ],
-  migrations: ['./src/database/migrations/*.ts'],
+  migrations: ['./src/database/migrations/*.js'],
 });
 
 export { appDataSource };
