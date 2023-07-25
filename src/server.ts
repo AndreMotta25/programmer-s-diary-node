@@ -12,6 +12,7 @@ import { routes } from './routes';
 import './shared/container';
 
 const app = express();
+app.set('Access-Control-Allow-Origin', '*');
 
 appDataSource
   .initialize()
