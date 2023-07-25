@@ -58,7 +58,7 @@ class EmailSend implements IEmailSender {
       attachments: [
         {
           filename: 'logo.png',
-          path: '../../assets/logo.png',
+          path: resolve(__dirname, '..', '..', 'assets', 'logo.png'),
           cid: 'logo',
         },
       ],
