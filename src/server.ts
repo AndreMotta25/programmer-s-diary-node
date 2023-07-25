@@ -19,7 +19,8 @@ appDataSource
   .then(() => {
     console.log('Data Source has been initialized!');
   })
-  .catch(() => {
+  .catch((e) => {
+    console.log(e);
     console.log('Erro na conexão com o banco.');
   });
 
