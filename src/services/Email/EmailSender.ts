@@ -67,6 +67,7 @@ class EmailSend implements IEmailSender {
       await this.transport.sendMail(sender);
       return 'E-Mail enviado com sucesso';
     } catch (e) {
+      console.log(e);
       throw new AppError('Ocorreu um erro ao enviar o email');
     }
   }
