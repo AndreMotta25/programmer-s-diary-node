@@ -1,7 +1,7 @@
 import 'reflect-metadata';
 import 'express-async-errors';
 import 'dotenv/config';
-import { config } from 'dotenv';
+
 import express, { Request, Response, NextFunction } from 'express';
 import path from 'path';
 

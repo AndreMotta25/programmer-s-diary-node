@@ -23,7 +23,7 @@ class ForgetPasswordUseCase {
     if (!user) throw new AppError('Usuario não achado');
 
     const token = sign(
-      { subject: user.id, exp: convertTime.toMin(3) },
+      { subject: user.id, exp: convertTime.toMin(10) },
       user.hashToken
     );
 
