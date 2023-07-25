@@ -1,15 +1,18 @@
-import 'dotenv/config';
 import { DataSource } from 'typeorm';
+
+let extension = 'ts';
+
+if (process.env.NODE_ENV?.toLowerCase() === 'production') extension = 'js';
 
 const appDataSource = new DataSource({
   type: 'postgres',
   url: process.env.DATABASE_URL,
   synchronize: false,
   entities: [
-    './dist/modules/accounts/entities/*.js',
-    './dist/modules/cards/entities/*.js',
+    `./src/modules/accounts/entities/*.${extension}`,
+    `./src/modules/cards/entities/*.${extension}`,
   ],
-  migrations: ['./dist/database/migrations/*.js'],
+  migrations: [`./src/database/migrations/*.${extension}`],
 });
 
 export { appDataSource };
